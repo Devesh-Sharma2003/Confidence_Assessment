@@ -1,0 +1,29 @@
+!pip install SpeechRecognition
+
+%pip install TextBlob
+
+%pip install nltk
+
+import speech_recognition as sr
+from textblob import TextBlob
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+stop_words = stopwords.words('english')
+
+def sentiment_of_audio(audiofile):
+  r = sr.Recognizer()
+  sample = sr.AudioFile(audiofile)
+  with sample as source:
+    audio = r.listen(source)
+  text = r.recognize_google(audio)
+  tokens = word_tokenize(text)
+  clean_text = [i for i in tokens if i not in stop_words]
+  clean_text = [x.lower() for x in clean_text]
+  clean_text = [word for word in clean_text if word.isalpha()]
+  clean_string = ' '.join(word for word in clean_text)
+  sentiment = TextBlob(clean_string).sentiment
+  return sentiment
+sentiment_of_audio("male(1).wav")
